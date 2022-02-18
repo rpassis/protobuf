@@ -99,13 +99,13 @@ void GPBMessageDropUnknownFieldsRecursively(GPBMessage *initialMessage) {
         continue;
       }
       switch (field.fieldType) {
-        case GPBFieldTypeSingle:
+        case GPBFieldTypeSingle: {
           if (GPBGetHasIvarField(msg, field)) {
             GPBMessage *fieldMessage = GPBGetObjectIvarWithFieldNoAutocreate(msg, field);
             [todo addObject:fieldMessage];
           }
           break;
-
+        }
         case GPBFieldTypeRepeated: {
           NSArray *fieldMessages = GPBGetObjectIvarWithFieldNoAutocreate(msg, field);
           if (fieldMessages.count) {
@@ -117,61 +117,68 @@ void GPBMessageDropUnknownFieldsRecursively(GPBMessage *initialMessage) {
         case GPBFieldTypeMap: {
           id rawFieldMap = GPBGetObjectIvarWithFieldNoAutocreate(msg, field);
           switch (field.mapKeyDataType) {
-            case GPBDataTypeBool:
+            case GPBDataTypeBool: {
               [(GPBBoolObjectDictionary*)rawFieldMap enumerateKeysAndObjectsUsingBlock:^(
                   BOOL key, id _Nonnull object, BOOL * _Nonnull stop) {
                 #pragma unused(key, stop)
                 [todo addObject:object];
               }];
               break;
+            }
             case GPBDataTypeFixed32:
-            case GPBDataTypeUInt32:
+            case GPBDataTypeUInt32: {
               [(GPBUInt32ObjectDictionary*)rawFieldMap enumerateKeysAndObjectsUsingBlock:^(
                   uint32_t key, id _Nonnull object, BOOL * _Nonnull stop) {
                 #pragma unused(key, stop)
                 [todo addObject:object];
               }];
               break;
+            }
             case GPBDataTypeInt32:
             case GPBDataTypeSFixed32:
-            case GPBDataTypeSInt32:
+            case GPBDataTypeSInt32: {
               [(GPBInt32ObjectDictionary*)rawFieldMap enumerateKeysAndObjectsUsingBlock:^(
                   int32_t key, id _Nonnull object, BOOL * _Nonnull stop) {
                 #pragma unused(key, stop)
                 [todo addObject:object];
               }];
               break;
+            }
             case GPBDataTypeFixed64:
-            case GPBDataTypeUInt64:
+            case GPBDataTypeUInt64: {
               [(GPBUInt64ObjectDictionary*)rawFieldMap enumerateKeysAndObjectsUsingBlock:^(
                   uint64_t key, id _Nonnull object, BOOL * _Nonnull stop) {
                 #pragma unused(key, stop)
                 [todo addObject:object];
               }];
               break;
+            }
             case GPBDataTypeInt64:
             case GPBDataTypeSFixed64:
-            case GPBDataTypeSInt64:
+            case GPBDataTypeSInt64: {
               [(GPBInt64ObjectDictionary*)rawFieldMap enumerateKeysAndObjectsUsingBlock:^(
                   int64_t key, id _Nonnull object, BOOL * _Nonnull stop) {
                 #pragma unused(key, stop)
                 [todo addObject:object];
               }];
               break;
-            case GPBDataTypeString:
+            }
+            case GPBDataTypeString: {
               [(NSDictionary*)rawFieldMap enumerateKeysAndObjectsUsingBlock:^(
                   NSString * _Nonnull key, GPBMessage * _Nonnull obj, BOOL * _Nonnull stop) {
                 #pragma unused(key, stop)
                 [todo addObject:obj];
               }];
               break;
+            }
             case GPBDataTypeFloat:
             case GPBDataTypeDouble:
             case GPBDataTypeEnum:
             case GPBDataTypeBytes:
             case GPBDataTypeGroup:
-            case GPBDataTypeMessage:
+            case GPBDataTypeMessage: {
               NSCAssert(NO, @"Aren't valid key types.");
+            }
           }
           break;
         }  // switch(field.mapKeyDataType)
